@@ -5,12 +5,12 @@ using System;
 
 public class PlayerController : MonoBehaviour
 {
-    public float a;
+    public Vector3 a = Vector3.zero;
     public Vector3 v = Vector3.zero;
-    
+    public float vitesse = 10f;//Vitesse engendrée par la flèche de droite ou de gauche
+
     public Vector3 normal = new Vector3(0f, 0f, 0f);
    
-    public float vitesse = 10f;//Vitesse engendrée par la flèche de droite ou de gauche
     private Rigidbody2D rb;
     public bool isGrounded = false;
     public float anglePente = 0;
@@ -22,31 +22,24 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        v.x = 0f;
-        v.y = vitesse;
-        v.z = 0f;
-        a = 0.2f;
-        //Debug.Log("allo man wtf");
+        a.y = 9.8f;
     }
 
     //Update is called once per frame
     void Update()
-    {
-       //Partie Raycast
-        Debug.DrawRay(transform.position, v.normalized, Color.red);
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, v.normalized , 1f);
-        if(hit)
-        {
-            Debug.Log(hit.collider.Rigidbody2D.gameObject.namespace)
-        }
+    {        
 
     }
 
     void FixedUpdate()
     {
         //v.y -= a;
-        
-
+        Debug.DrawRay(transform.position + Vector3.Scale((transform.lossyScale), v.normalized), v * Time.fixedDeltaTime, Color.red);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position + Vector3.Scale((transform.lossyScale), v.normalized), v , (float)(Math.Sqrt(Math.Pow(v.x,2) + Math.Pow(v.y,2)))* Time.fixedDeltaTime);
+        if(hit.collider != null)
+        {
+            Debug.Log("Hit: " + hit.collider);
+        }
 
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
@@ -63,16 +56,8 @@ public class PlayerController : MonoBehaviour
             temp = (float)Math.Sqrt(Math.Pow((double)vitesse, 2) / 2);
         }
         v = (moveInput * temp);
-
-
-
-        bool bla = true;
-        if (horizontal == 0 && vertical == 0)
-        {
-            bla = false;
-        }
-
-        if (isGrounded && bla)
+        
+        if (isGrounded)
         {
 
             if (angleNorm < 90 && angleNorm > 0)
@@ -106,10 +91,8 @@ public class PlayerController : MonoBehaviour
             }
             //Debug.Log("Angle vitesse coll: " + angleV);
 
-
         }
         rb.MovePosition(transform.position + v * Time.fixedDeltaTime);
-
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -117,7 +100,7 @@ public class PlayerController : MonoBehaviour
         int nbContacts = collision.contactCount;
 
         /*Isoler le dernier contact, avec les informations de celui-ci, trouver la normale et l'angle de la normale
-        par rapport � l'horiozontale (je converti l'ange de degr�s � radians)*/
+        par rapport à l'horiozontale (je converti l'ange de degrés à radians)*/
 
         ContactPoint2D contact = collision.GetContact(nbContacts - 1);
         normal = contact.normal;
