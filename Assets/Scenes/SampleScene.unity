@@ -324,8 +324,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1999124154}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.93, y: 4.55, z: 0}
-  m_LocalScale: {x: 0.41372356, y: 0.4010264, z: 1}
+  m_LocalPosition: {x: -7.9, y: 4.34, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -343,10 +343,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b7cdd32df927504794e7191e1914a08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  a: 1
+  a: {x: 0, y: 0, z: 0}
+  acc: -9.8
   v: {x: 0, y: 0, z: 0}
-  normal: {x: 0, y: 0, z: 0}
   vitesse: 10
+  normal: {x: 0, y: 0, z: 0}
   isGrounded: 0
   anglePente: 0
   angleV: 0
@@ -431,8 +432,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2124308856}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.96, y: -3.27, z: 0}
-  m_LocalScale: {x: 6.4919, y: 0.6531, z: 1}
+  m_LocalPosition: {x: -0.0117, y: -2.43, z: 0}
+  m_LocalScale: {x: 17.548254, y: 0.6531, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

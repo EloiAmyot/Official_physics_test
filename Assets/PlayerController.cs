@@ -5,11 +5,12 @@ using System;
 
 public class PlayerController : MonoBehaviour
 {
-    public Vector3 a = Vector3.zero;
+    public Vector3 a = new Vector3(0f,0f,0f);
+    public float acc = -11f;
     public Vector3 v = Vector3.zero;
     public float vitesse = 10f;//Vitesse engendrée par la flèche de droite ou de gauche
 
-    public Vector3 normal = new Vector3(0f, 0f, 0f);
+    public Vector3 normal = new Vector3(0f, -0f, 0f);
    
     private Rigidbody2D rb;
     public bool isGrounded = false;
@@ -22,7 +23,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        a.y = 9.8f;
+        a.y = acc * Time.fixedDeltaTime;
     }
 
     //Update is called once per frame
@@ -33,31 +34,49 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        //v.y -= a;
-        Debug.DrawRay(transform.position + Vector3.Scale((transform.lossyScale), v.normalized), v * Time.fixedDeltaTime, Color.red);
-        RaycastHit2D hit = Physics2D.Raycast(transform.position + Vector3.Scale((transform.lossyScale), v.normalized), v , (float)(Math.Sqrt(Math.Pow(v.x,2) + Math.Pow(v.y,2)))* Time.fixedDeltaTime);
-        if(hit.collider != null)
-        {
-            Debug.Log("Hit: " + hit.collider);
-        }
+        
+        
 
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
         Vector3 moveInput = new Vector3(horizontal, vertical, 0f);
-        float temp = vitesse;
-        angleV = Vector3.SignedAngle(new Vector3(1, 0, 0), moveInput, new Vector3(0, 0, 0));
-        if (angleV < 0)
+        if(!isGrounded)
         {
-            angleV += 360;
+            v+=a;
+            moveInput.y = 0;
+            moveInput.x = 0;
         }
+        else
+        {
+            v.x = 0;
+            v.y = 0;
+        }
+        if(v.x!=0)moveInput.x = 0;
+
+        float temp = vitesse;
+        angleV = Vector2.SignedAngle(Vector2.right, new Vector2(v.x, v.y));
+        
+        if (angleV < 0) {angleV += 360;}
+        Debug.Log(angleV);
 
         if (horizontal != 0 && vertical != 0)
         {
             temp = (float)Math.Sqrt(Math.Pow((double)vitesse, 2) / 2);
         }
-        v = (moveInput * temp);
-        
-        if (isGrounded)
+        v += (moveInput * temp);
+
+        //Section RayCast
+        Debug.DrawRay(transform.position + Vector3.Scale((transform.lossyScale), v.normalized), v * Time.fixedDeltaTime, Color.red);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position + Vector3.Scale((transform.lossyScale), v.normalized), v , (float)(Math.Sqrt(Math.Pow(v.x,2) + Math.Pow(v.y,2)))* Time.fixedDeltaTime);
+        if(hit.collider != null && !isGrounded)
+        {
+            //Debug.Log("Hit: " + hit.collider);
+            Vector3 rayTransform = new Vector3(hit.distance * (float)Math.Cos(angleV), hit.distance * (float)Math.Sin(angleV), 0);
+            rb.MovePosition(transform.position + rayTransform); 
+            return;
+        }
+
+        /* if (isGrounded)
         {
 
             if (angleNorm < 90 && angleNorm > 0)
@@ -91,7 +110,7 @@ public class PlayerController : MonoBehaviour
             }
             //Debug.Log("Angle vitesse coll: " + angleV);
 
-        }
+        } */
         rb.MovePosition(transform.position + v * Time.fixedDeltaTime);
     }
     void OnCollisionEnter2D(Collision2D collision)
