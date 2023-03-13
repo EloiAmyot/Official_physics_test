@@ -71,7 +71,7 @@ public class PlayerController : MonoBehaviour
         if(hit.collider != null && !isGrounded)
         {
             //Debug.Log("Hit: " + hit.collider);
-            Vector3 rayTransform = new Vector3(hit.distance * (float)Math.Cos(angleV), hit.distance * (float)Math.Sin(angleV), 0);
+            Vector3 rayTransform = new Vector3(hit.distance * (float)Math.Cos(angleV), hit.distance * (float)Math.Sin(angleV), 0f);
             rb.MovePosition(transform.position + rayTransform); 
             return;
         }
