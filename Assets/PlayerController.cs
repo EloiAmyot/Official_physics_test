@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         a.y = acc * Time.fixedDeltaTime;
+        v = 3 * Vector3.down;
     }
 
     //Update is called once per frame
@@ -34,9 +35,12 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        
-        
-
+       /*  Debug.DrawRay(transform.position + (Vector3.Scale((transform.lossyScale/2), v.normalized)), v , Color.red);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position + (Vector3.Scale((transform.lossyScale/2), v.normalized)), v , 3f);
+        if(hit.collider!=null){
+            Debug.Log("hit!");
+            rb.MovePosition(transform.position +hit.distance * v.normalized);
+        } */
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
         Vector3 moveInput = new Vector3(horizontal, vertical, 0f);
@@ -66,13 +70,11 @@ public class PlayerController : MonoBehaviour
         v += (moveInput * temp);
 
         //Section RayCast
-        Debug.DrawRay(transform.position + Vector3.Scale((transform.lossyScale), v.normalized), v * Time.fixedDeltaTime, Color.red);
-        RaycastHit2D hit = Physics2D.Raycast(transform.position + Vector3.Scale((transform.lossyScale), v.normalized), v , (float)(Math.Sqrt(Math.Pow(v.x,2) + Math.Pow(v.y,2)))* Time.fixedDeltaTime);
+        Debug.DrawRay(transform.position + (Vector3.Scale((transform.lossyScale), v.normalized)), v * Time.fixedDeltaTime, Color.red);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position + (Vector3.Scale((transform.lossyScale), v.normalized)), v , (float)Math.Sqrt(Math.Pow(v.x, 2)+ Math.Pow(v.y, 2)) * Time.fixedDeltaTime);
         if(hit.collider != null && !isGrounded)
         {
-            //Debug.Log("Hit: " + hit.collider);
-            Vector3 rayTransform = new Vector3(hit.distance * (float)Math.Cos(angleV), hit.distance * (float)Math.Sin(angleV), 0f);
-            rb.MovePosition(transform.position + rayTransform); 
+            rb.MovePosition(transform.position + hit.distance * v.normalized);
             return;
         }
 
@@ -109,7 +111,7 @@ public class PlayerController : MonoBehaviour
                 angleV += 360;
             }
             //Debug.Log("Angle vitesse coll: " + angleV);
-
+            
         } */
         rb.MovePosition(transform.position + v * Time.fixedDeltaTime);
     }
