@@ -19,6 +19,9 @@ public class PlayerController : MonoBehaviour
     public float angleNorm = 0;
     public double teta = 0;
 
+    public Vector3 transfo = Vector3.zero;
+    public Vector3 newPos = Vector3.zero;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -61,7 +64,7 @@ public class PlayerController : MonoBehaviour
         angleV = Vector2.SignedAngle(Vector2.right, new Vector2(v.x, v.y));
         
         if (angleV < 0) {angleV += 360;}
-        Debug.Log(angleV);
+        //Debug.Log(angleV);
 
         if (horizontal != 0 && vertical != 0)
         {
@@ -70,14 +73,15 @@ public class PlayerController : MonoBehaviour
         v += (moveInput * temp);
 
         //Section RayCast
-        Debug.DrawRay(transform.position + (Vector3.Scale((transform.lossyScale), v.normalized)), v * Time.fixedDeltaTime, Color.red);
-        RaycastHit2D hit = Physics2D.Raycast(transform.position + (Vector3.Scale((transform.lossyScale), v.normalized)), v , (float)Math.Sqrt(Math.Pow(v.x, 2)+ Math.Pow(v.y, 2)) * Time.fixedDeltaTime);
+        transfo = Vector3.Scale((transform.lossyScale/2), v.normalized);
+        newPos = transfo + transform.position;
+        Debug.DrawRay(transform.position, v.normalized, Color.red);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position + (Vector3.Scale((transform.lossyScale/2), v.normalized)), v , (float)Math.Sqrt(Math.Pow(v.x, 2)+ Math.Pow(v.y, 2)) * Time.fixedDeltaTime);
         if(hit.collider != null && !isGrounded)
         {
             rb.MovePosition(transform.position + hit.distance * v.normalized);
             return;
         }
-        //GitHubTest
 
         /* if (isGrounded)
         {
