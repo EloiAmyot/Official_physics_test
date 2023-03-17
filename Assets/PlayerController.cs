@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using TreeEditor;
 
 public class PlayerController : MonoBehaviour
 {
@@ -36,12 +37,6 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-       /*  Debug.DrawRay(transform.position + (Vector3.Scale((transform.lossyScale/2), v.normalized)), v , Color.red);
-        RaycastHit2D hit = Physics2D.Raycast(transform.position + (Vector3.Scale((transform.lossyScale/2), v.normalized)), v , 3f);
-        if(hit.collider!=null){
-            Debug.Log("hit!");
-            rb.MovePosition(transform.position +hit.distance * v.normalized);
-        } */
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
         Vector3 moveInput = new Vector3(horizontal, vertical, 0f);
@@ -62,7 +57,6 @@ public class PlayerController : MonoBehaviour
         angleV = Vector2.SignedAngle(Vector2.right, new Vector2(v.x, v.y));
         
         if (angleV < 0) {angleV += 360;}
-        //Debug.Log(angleV);
 
         if (horizontal != 0 && vertical != 0)
         {
@@ -78,20 +72,15 @@ public class PlayerController : MonoBehaviour
         
         Debug.DrawRay(origin, v * Time.fixedDeltaTime, Color.red);
         RaycastHit2D hit = Physics2D.Raycast(origin, v * Time.fixedDeltaTime , v.magnitude * Time.fixedDeltaTime);
+        
+        bool hitFound = false;
         if(hit.collider != null && !isGrounded)
         {
-            Vector3 correction = hit.distance * v.normalized;
-            Debug.Log("transform.position : " + transform.position);
-            Debug.Log("v.magnitude : " + v.magnitude * Time.fixedDeltaTime);
-            Debug.Log("hit.distance: " + hit.distance);
-            Debug.Log("v.normalized:" +v.normalized);
-            Debug.Log("Correction: " + correction);
-            transform.position = transform.position + correction;
-            //isGrounded = true;
-            Debug.Log("End position: " + transform.position);
+            Debug.Log("Hit.point: " + hit.point);
+            rb.MovePosition(hit.point - Vector2.Scale(transform.lossyScale/2, v.normalized) + new Vector2(0f, 0.01f));
             Debug.Log("isGrounded: " + isGrounded);
-            
-            return;
+            ground();
+            //return;
         }
         //GitHubTest
 
@@ -130,7 +119,16 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("Angle vitesse coll: " + angleV);
             
         } */
-        rb.MovePosition(transform.position + v * Time.fixedDeltaTime);
+        if (!hitFound)
+        {
+            rb.MovePosition(transform.position + v * Time.fixedDeltaTime);
+        }
+       
+    }
+
+    void ground()
+    {
+        isGrounded = true;
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
