@@ -19,8 +19,6 @@ public class PlayerController : MonoBehaviour
     public float angleNorm = 0;
     public double teta = 0;
 
-    public Vector3 transfo = Vector3.zero;
-    public Vector3 newPos = Vector3.zero;
 
     // Start is called before the first frame update
     void Start()
@@ -73,15 +71,29 @@ public class PlayerController : MonoBehaviour
         v += (moveInput * temp);
 
         //Section RayCast
-        transfo = Vector3.Scale((transform.lossyScale/2), v.normalized);
-        newPos = transfo + transform.position;
-        Debug.DrawRay(transform.position, v.normalized, Color.red);
-        RaycastHit2D hit = Physics2D.Raycast(transform.position + (Vector3.Scale((transform.lossyScale/2), v.normalized)), v , (float)Math.Sqrt(Math.Pow(v.x, 2)+ Math.Pow(v.y, 2)) * Time.fixedDeltaTime);
+
+        //Debug.Log("Lossy scale: " + transform.lossyScale + "Local scale: " + transform.localScale);
+        Vector3 increment = new Vector3((float)Math.Abs(v.x), (float)Math.Abs(v.y), 0f);
+        Vector3 origin = transform.position + Vector3.Scale(transform.lossyScale/2 + increment * Time.fixedDeltaTime, v.normalized);
+        
+        Debug.DrawRay(origin, v * Time.fixedDeltaTime, Color.red);
+        RaycastHit2D hit = Physics2D.Raycast(origin, v * Time.fixedDeltaTime , v.magnitude * Time.fixedDeltaTime);
         if(hit.collider != null && !isGrounded)
         {
-            rb.MovePosition(transform.position + hit.distance * v.normalized);
+            Vector3 correction = hit.distance * v.normalized;
+            Debug.Log("transform.position : " + transform.position);
+            Debug.Log("v.magnitude : " + v.magnitude * Time.fixedDeltaTime);
+            Debug.Log("hit.distance: " + hit.distance);
+            Debug.Log("v.normalized:" +v.normalized);
+            Debug.Log("Correction: " + correction);
+            transform.position = transform.position + correction;
+            //isGrounded = true;
+            Debug.Log("End position: " + transform.position);
+            Debug.Log("isGrounded: " + isGrounded);
+            
             return;
         }
+        //GitHubTest
 
         /* if (isGrounded)
         {
