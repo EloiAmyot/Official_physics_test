@@ -72,7 +72,10 @@ public class PlayerController : MonoBehaviour
         
         Debug.DrawRay(origin, v * Time.fixedDeltaTime, Color.red);
         RaycastHit2D hit = Physics2D.Raycast(origin, v * Time.fixedDeltaTime , v.magnitude * Time.fixedDeltaTime);
-        
+
+        origin = origin + new Vector3(-0.5f, 0.5f, 0f);
+        Debug.DrawRay(origin, v * Time.fixedDeltaTime *2, Color.yellow);
+
         bool hitFound = false;
         if(hit.collider != null && !isGrounded)
         {
