@@ -7,13 +7,18 @@ using Unity.Burst.CompilerServices;
 
 public class PlayerController : MonoBehaviour
 {
-    public Vector3 a = new Vector3(0f,0f,0f);
+
+    public float maxDistance;
+    public float radius;
+    RaycastHit hit;
+    public LayerMask layerMask;
+    public Vector3 a = new Vector3(0f, 0f, 0f);
     public float acc = -11f;
     public Vector3 v = Vector3.zero;
     public float vitesse = 10f;//Vitesse engendrée par la flèche de droite ou de gauche
 
     public Vector3 normal = new Vector3(0f, -0f, 0f);
-   
+
     private Rigidbody2D rb;
     public bool isGrounded = false;
     public float anglePente = 0;
@@ -32,7 +37,7 @@ public class PlayerController : MonoBehaviour
 
     //Update is called once per frame
     void Update()
-    {        
+    {
 
     }
 
@@ -41,9 +46,9 @@ public class PlayerController : MonoBehaviour
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
         Vector3 moveInput = new Vector3(horizontal, vertical, 0f);
-        if(!isGrounded)
+        if (!isGrounded)
         {
-            v+=a;
+            v += a;
             moveInput.y = 0;
             moveInput.x = 0;
         }
@@ -52,12 +57,12 @@ public class PlayerController : MonoBehaviour
             v.x = 0;
             v.y = 0;
         }
-        if(v.x!=0)moveInput.x = 0;
+        if (v.x != 0) moveInput.x = 0;
 
         float temp = vitesse;
         angleV = Vector2.SignedAngle(Vector2.right, new Vector2(v.x, v.y));
-        
-        if (angleV < 0) {angleV += 360;}
+
+        if (angleV < 0) { angleV += 360; }
 
         if (horizontal != 0 && vertical != 0)
         {
@@ -90,7 +95,7 @@ public class PlayerController : MonoBehaviour
         //    //return;
         //}
 
-        RaycastHit hit;
+
 
 
 
@@ -135,13 +140,19 @@ public class PlayerController : MonoBehaviour
         //{
 
         //}
-      
-        if (Physics.SphereCast(transform.position, 1.5f, Vector3.down, out hit, 10f))
+        if(Input.GetKeyDown(KeyCode.Space)) 
         {
-            print("hit");
+            Cast();
         }
-        else{rb.MovePosition(transform.position + v * Time.fixedDeltaTime);
-            print("Marche pas");
+
+        rb.MovePosition(transform.position + v * Time.fixedDeltaTime);
+    }
+
+    void Cast()
+    {
+        if (Physics.SphereCast(transform.position, radius, -transform.up, out hit, maxDistance,~layerMask))
+        {
+            print("Alo hoy");
         }
     }
 
@@ -153,7 +164,7 @@ public class PlayerController : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, 1.5f);
+        Gizmos.DrawSphere(transform.position - transform.up* maxDistance, radius);
         //Debug.Log("Allo gizoms");
     }
 
