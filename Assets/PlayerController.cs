@@ -73,15 +73,18 @@ public class PlayerController : MonoBehaviour
         Debug.DrawRay(origin, v * Time.fixedDeltaTime, Color.red);
         RaycastHit2D hit = Physics2D.Raycast(origin, v * Time.fixedDeltaTime , v.magnitude * Time.fixedDeltaTime);
 
-        origin = origin + new Vector3(-0.5f, 0.5f, 0f);
+        origin = origin + Vector3.Scale(new Vector3(0f, -0.5f, 0f), v.normalized);
+        origin.x += 0.5f;
         Debug.DrawRay(origin, v * Time.fixedDeltaTime *2, Color.yellow);
 
         bool hitFound = false;
         if(hit.collider != null && !isGrounded)
         {
             Debug.Log("Hit.point: " + hit.point);
-            rb.MovePosition(hit.point - Vector2.Scale(transform.lossyScale/2, v.normalized) + new Vector2(0f, 0.01f));
+            Debug.Log("Start pos: " + transform.position);
+            rb.MovePosition(hit.point - Vector2.Scale(transform.lossyScale/2, v.normalized));
             Debug.Log("isGrounded: " + isGrounded);
+            Debug.Log("new Pos: " + transform.position);
             ground();
             //return;
         }
