@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using TreeEditor;
+using Unity.Burst.CompilerServices;
 
 public class PlayerController : MonoBehaviour
 {
@@ -67,27 +68,32 @@ public class PlayerController : MonoBehaviour
         //Section RayCast
 
         //Debug.Log("Lossy scale: " + transform.lossyScale + "Local scale: " + transform.localScale);
-        Vector3 increment = new Vector3((float)Math.Abs(v.x), (float)Math.Abs(v.y), 0f);
-        Vector3 origin = transform.position + Vector3.Scale(transform.lossyScale/2 + increment * Time.fixedDeltaTime, v.normalized);
-        
-        Debug.DrawRay(origin, v * Time.fixedDeltaTime, Color.red);
-        RaycastHit2D hit = Physics2D.Raycast(origin, v * Time.fixedDeltaTime , v.magnitude * Time.fixedDeltaTime);
+        //Vector3 increment = new Vector3((float)Math.Abs(v.x), (float)Math.Abs(v.y), 0f);
+        //Vector3 origin = transform.position + Vector3.Scale(transform.lossyScale/2 + increment * Time.fixedDeltaTime, v.normalized);
 
-        origin = origin + Vector3.Scale(new Vector3(0f, -0.5f, 0f), v.normalized);
-        origin.x += 0.5f;
-        Debug.DrawRay(origin, v * Time.fixedDeltaTime *2, Color.yellow);
+        //Debug.DrawRay(origin, v * Time.fixedDeltaTime, Color.red);
+        //RaycastHit2D hit = Physics2D.Raycast(origin, v * Time.fixedDeltaTime , v.magnitude * Time.fixedDeltaTime);
 
-        bool hitFound = false;
-        if(hit.collider != null && !isGrounded)
-        {
-            Debug.Log("Hit.point: " + hit.point);
-            Debug.Log("Start pos: " + transform.position);
-            rb.MovePosition(hit.point - Vector2.Scale(transform.lossyScale/2, v.normalized));
-            Debug.Log("isGrounded: " + isGrounded);
-            Debug.Log("new Pos: " + transform.position);
-            ground();
-            //return;
-        }
+        //origin = origin + Vector3.Scale(new Vector3(0f, -0.5f, 0f), v.normalized);
+        //origin.x += 0.5f;
+        //Debug.DrawRay(origin, v * Time.fixedDeltaTime *2, Color.yellow);
+
+        //bool hitFound = false;
+        //if(hit.collider != null && !isGrounded)
+        //{
+        //    Debug.Log("Hit.point: " + hit.point);
+        //    Debug.Log("Start pos: " + transform.position);
+        //    rb.MovePosition(hit.point - Vector2.Scale(transform.lossyScale/2, v.normalized));
+        //    Debug.Log("isGrounded: " + isGrounded);
+        //    Debug.Log("new Pos: " + transform.position);
+        //    ground();
+        //    //return;
+        //}
+
+        RaycastHit hit;
+
+
+
         //GitHubTest
 
         /* if (isGrounded)
@@ -125,17 +131,32 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("Angle vitesse coll: " + angleV);
             
         } */
-        if (!hitFound)
+        //if (!hitFound)
+        //{
+
+        //}
+      
+        if (Physics.SphereCast(transform.position, 1.5f, Vector3.down, out hit, 10f))
         {
-            rb.MovePosition(transform.position + v * Time.fixedDeltaTime);
+            print("hit");
         }
-       
+        else{rb.MovePosition(transform.position + v * Time.fixedDeltaTime);
+            print("Marche pas");
+        }
     }
 
     void ground()
     {
         isGrounded = true;
     }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, 1.5f);
+        //Debug.Log("Allo gizoms");
+    }
+
     void OnCollisionEnter2D(Collision2D collision)
     {
         isGrounded = true;
