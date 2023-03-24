@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerCollider : MonoBehaviour
+public class CapsuleColli : MonoBehaviour
 {
     // Start is called before the first frame update
     private bool colliding = false;
@@ -10,13 +10,14 @@ public class PlayerCollider : MonoBehaviour
     private Collision2D collision;
     void Start()
     {
-        
+
     }
+    
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public bool isColliding()
@@ -35,8 +36,9 @@ public class PlayerCollider : MonoBehaviour
     void OnCollisionEnter2D(Collision2D coll)
     {
         contactPoint = coll.GetContact(0).point;
-        collision  = coll;
+        collision = coll;
         colliding = true;
+        print("Pc collidins");
     }
 
     private void OnCollisionExit2D(Collision2D collision)

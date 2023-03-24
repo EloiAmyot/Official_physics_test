@@ -87,7 +87,7 @@ public class PlayerController : MonoBehaviour
 
             //print("Transform.position: " + transform.position);
             //print("Collider.position: " + pct.position);
-            print("ContactPoint: " + pc.GetContactPoint());
+            //print("ContactPoint: " + pc.GetContactPoint());
             //print("Scale: " + Vector2.Scale(transform.lossyScale / 2, v.normalized));
             //print("Seperation: " + seperation);
             //transform.position = pc.GetContactPoint() - Vector2.Scale(transform.lossyScale / 2, v.normalized) - new Vector2(0f, seperation);
@@ -99,8 +99,8 @@ public class PlayerController : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(origin, v * Time.fixedDeltaTime , v.magnitude * Time.fixedDeltaTime);
 
 
-            print("ALlo man");
-            //transform.position = pc.GetCollision().gameObject.transform.position + new Vector3(transform.position.x, (pc.GetCollision().gameObject.transform.localScale.y)/2 + (transform.localScale.y)/2, 0f);
+            //print("ALlo man");
+            transform.position = pc.GetCollision().gameObject.transform.position + new Vector3(transform.position.x, (pc.GetCollision().gameObject.transform.localScale.y)/2 + (transform.localScale.y)/2, 0f);
 
             //transform.position = pc.GetContactPoint() + new Vector2(0f,(transform.localScale.y)/2);
         }
