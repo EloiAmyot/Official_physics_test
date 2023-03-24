@@ -37,7 +37,8 @@ public class PlayerCollider : MonoBehaviour
         contactPoint = coll.GetContact(0).point;
         collision  = coll;
         colliding = true;
-        print("Coucouuuu");
+        print("Coucu");
+        print(contactPoint);
     }
 
     private void OnCollisionExit2D(Collision2D collision)

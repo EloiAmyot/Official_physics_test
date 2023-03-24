@@ -8,7 +8,7 @@ using Unity.Burst.CompilerServices;
 public class PlayerController : MonoBehaviour
 {
     public Vector3 a = new Vector3(0f, 0f, 0f);
-    public float acc = -11f;
+    public float acc;
     public Vector3 v = Vector3.zero;
     public float vitesse = 10f;//Vitesse engendrée par la flèche de droite ou de gauche
 
@@ -78,19 +78,33 @@ public class PlayerController : MonoBehaviour
         transform.position += v * Time.fixedDeltaTime;
 
 
+        //print(isGrounded);
+        //print(pc.isColliding());
         if (!isGrounded && pc.isColliding())
         {
-            
-            float seperation = pc.GetCollision().GetContact(0).separation;
 
-            print("Transform.position: " + transform.position);
-            print("Collider.position: " + pct.position);
+            //float seperation = pc.GetCollision().GetContact(0).separation;
+
+            //print("Transform.position: " + transform.position);
+            //print("Collider.position: " + pct.position);
             print("ContactPoint: " + pc.GetContactPoint());
-            print("Scale: " + Vector2.Scale(transform.lossyScale / 2, v.normalized));
-            print("Seperation: " + seperation);
-            transform.position = pc.GetContactPoint() - Vector2.Scale(transform.lossyScale / 2, v.normalized) - new Vector2(0f, seperation);
-            print("Transform new position: " + transform.position);
+            //print("Scale: " + Vector2.Scale(transform.lossyScale / 2, v.normalized));
+            //print("Seperation: " + seperation);
+            //transform.position = pc.GetContactPoint() - Vector2.Scale(transform.lossyScale / 2, v.normalized) - new Vector2(0f, seperation);
+            //print("Transform new position: " + transform.position);
+
+            Vector3 increment = new Vector3((float)Math.Abs(v.x), (float)Math.Abs(v.y), 0f);
+            Vector3 origin = transform.position + Vector3.Scale(transform.lossyScale / 2 + increment * Time.fixedDeltaTime, v.normalized);
+            Debug.DrawRay(origin, v * Time.fixedDeltaTime, Color.red);
+            RaycastHit2D hit = Physics2D.Raycast(origin, v * Time.fixedDeltaTime , v.magnitude * Time.fixedDeltaTime);
+
+
+            print("ALlo man");
+            //transform.position = pc.GetCollision().gameObject.transform.position + new Vector3(transform.position.x, (pc.GetCollision().gameObject.transform.localScale.y)/2 + (transform.localScale.y)/2, 0f);
+
+            //transform.position = pc.GetContactPoint() + new Vector2(0f,(transform.localScale.y)/2);
         }
+
         pct.position = transform.position;
 
     }
