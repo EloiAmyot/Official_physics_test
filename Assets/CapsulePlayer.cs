@@ -9,6 +9,7 @@ public class CapsulePlayer : MonoBehaviour
     public float acc;
     public Vector3 v = Vector3.zero;
     public float vitesse = 10f;//Vitesse engendrée par la flèche de droite ou de gauche
+    public int update = 0;
 
     public Vector3 normal = new Vector3(0f, -0f, 0f);
 
@@ -44,6 +45,21 @@ public class CapsulePlayer : MonoBehaviour
 
     void FixedUpdate()
     {
+
+        if (!pc.isColliding())
+        {
+            transform.position += v * Time.fixedDeltaTime;
+        }
+        else if (pc.isColliding() && !isGrounded)
+        {
+            transform.position = new Vector3(transform.position.x, pc.GetCollision().transform.position.y + transform.localScale.y, 0f);
+            //ground();
+            print(isGrounded);
+        }
+       
+        pct.position = transform.position;
+        pct.localScale = transform.localScale;
+        update++;
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
         Vector3 moveInput = new Vector3(horizontal, vertical, 0f);
@@ -71,33 +87,10 @@ public class CapsulePlayer : MonoBehaviour
         }
         v += (moveInput * temp);
 
-        pct.localScale = transform.localScale + new Vector3(v.magnitude * Time.fixedDeltaTime, v.magnitude * Time.fixedDeltaTime/2, 0f);
-
-        print("Is grounded : " + isGrounded);
-        print("is colliding : " + pc.isColliding());
-        if (!isGrounded && pc.isColliding())
-        {
-
-            //Vector3 increment = new Vector3((float)Math.Abs(v.x), (float)Math.Abs(v.y), 0f);
-            //Vector3 origin = transform.position + Vector3.Scale(transform.lossyScale / 2 + increment * Time.fixedDeltaTime, v.normalized);
-            //Debug.DrawRay(origin, v * Time.fixedDeltaTime, Color.red);
-            //RaycastHit2D hit = Physics2D.Raycast(origin, v * Time.fixedDeltaTime, v.magnitude * Time.fixedDeltaTime);
-
-
-            print("Alolo");
-            //transform.position = pc.GetCollision().gameObject.transform.position + new Vector3(transform.position.x, (pc.GetCollision().gameObject.transform.localScale.y) / 2 + GetComponent<CapsuleCollider2D>().size.y * transform.localScale.y / 2, 0f);
-            print(pc.GetCollision().gameObject.transform.position);           
-            transform.position = pc.GetCollision().gameObject.transform.position;
-            //transform.position = pc.GetContactPoint() + new Vector2(0f,(transform.localScale.y)/2);
-        }
-        else
-        {
-            transform.position += v * Time.fixedDeltaTime;
-
-        }
-
-        pct.position = transform.position;
-
+        //pct.localScale = transform.localScale + new Vector3(v.magnitude * Time.fixedDeltaTime, v.magnitude * Time.fixedDeltaTime/2, 0f);
+        
+        pct.position = transform.position + v * Time.fixedDeltaTime; 
+        
     }
 
     void ground()
@@ -107,6 +100,7 @@ public class CapsulePlayer : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        print("Player colliding");
         isGrounded = true;
 
         int nbContacts = collision.contactCount;
@@ -142,4 +136,5 @@ public class CapsulePlayer : MonoBehaviour
         normal.y = 0f;
         angleNorm = 0;
     }
+    
 }

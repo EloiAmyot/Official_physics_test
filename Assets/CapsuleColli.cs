@@ -35,14 +35,16 @@ public class CapsuleColli : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D coll)
     {
+        print("Player collider colliding");
         contactPoint = coll.GetContact(0).point;
         collision = coll;
         colliding = true;
-        print("Pc collidins");
+        //print("Player collider colliding");
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
         colliding = false;
     }
+
 }
